@@ -2,6 +2,7 @@
 const { request, response } = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user.model');
+const DeletedUser = require('../models/deletedUser.model');
 
 
 const getUsers = async (req = request, res = response)=>{

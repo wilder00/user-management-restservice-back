@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../database/connection')
+const sequelize = require('../database/connection');
+const DeletedUser = require('./deletedUser.model');
 
 const User = sequelize.define('User', {
   // Model attributes are defined here
@@ -34,9 +35,16 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  state: {
+  // if user is active ( if the user is deleted or disabled)
+  isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
+    allowNull: false,
+  },
+  // for new users false, after Admin accept the request, true
+  acceptedRequest: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
     allowNull: false,
   },
   google: {
@@ -47,6 +55,41 @@ const User = sequelize.define('User', {
   // Other model options go here
 
 });
+
+User.hasOne(DeletedUser,{
+  foreignKey:{
+    name: 'userId',
+    allowNull: false,
+    sourceKey: 'id',
+  }
+})
+
+DeletedUser.belongsTo(User,{
+  foreignKey:{
+    name: 'userId',
+    allowNull: false,
+    targetId: 'id'
+  }
+})
+
+// to identify by whom he/she was deleted
+
+User.hasOne(DeletedUser,{
+  foreignKey:{
+    name: 'byUserId',
+    allowNull: false,
+    sourceKey: 'id',
+  }
+})
+
+DeletedUser.belongsTo(User,{
+  foreignKey:{
+    name: 'byUserId',
+    allowNull: false,
+    targetId: 'id'
+  }
+})
+
 
 // `sequelize.define` also returns the model
 console.log(User === sequelize.models.User); // true
