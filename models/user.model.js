@@ -33,12 +33,13 @@ const User = sequelize.define('User', {
   },
   role: {
     type: DataTypes.STRING,
+    defaultValue: 'USER_ROLE',
     allowNull: false
   },
   // if user is active ( if the user is deleted or disabled)
   isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true,
+    defaultValue: false,
     allowNull: false,
   },
   // for new users false, after Admin accept the request, true

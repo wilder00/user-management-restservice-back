@@ -40,8 +40,8 @@ const validateJWT = async ( req = request, res = response, next) => {
       })
     }
 
-    //verify whether the uid user has true state
-    if( !user.state ){
+    //verify whether the uid user has true isActive
+    if( !user.isActive ){
       return res.status(401).json({
         message: "token no válido - usuario deshabilitado"
       })

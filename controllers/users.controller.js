@@ -9,7 +9,7 @@ const getUsers = async (req = request, res = response)=>{
 
   //obtaining data from query params 
   const { limit = 5, from = 0 } = req.query
-  const where = {state: true}
+  const where = {isActive: true}
   const user  = req.user;
   try {
 
@@ -36,8 +36,6 @@ const getUsers = async (req = request, res = response)=>{
 
 const postUser = async(req, res = response)=>{
   
-  
-
   const {name, lastName, email, password, role} = req.body;
 
   try {
@@ -113,7 +111,7 @@ const deleteUser = async (req, res = response)=>{
 
     //borrado simbólico
     const user = await User.findByPk(userId);
-    const removed = await user.update({state: false})
+    const removed = await user.update({isActive: false})
     res.json({
       message: "Se eliminó el usuario" 
     });

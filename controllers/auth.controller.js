@@ -5,12 +5,10 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user.model')
 const { generateJWT } = require('../helpers/jwt-generator')
 
+
 const postLogin = async (req = request, res = response) => {
-
   const { email, password } = req.body  
-
   try {
-
     //verify if the email exits
     const user = await User.findOne({ where: { email }})
     if( !user ){
@@ -20,7 +18,7 @@ const postLogin = async (req = request, res = response) => {
     }
      
     // verify if user is active
-    if( !user.state ){
+    if( !user.isActive ){
       res.status(400).json({
         message: 'Usuario / Password no son correctos'
       })
@@ -49,7 +47,30 @@ const postLogin = async (req = request, res = response) => {
   }
 }
 
+const postRegister = async (req = request, res = response ) => {
 
+    const {name, lastName, email, password, role} = req.body;
+  
+    try {
+      //const user = new User({ firstName, lastName })
+      const user = new User({name, lastName, email, password})
+      
+  
+      //TODO: Encrypt password
+      const salt = bcrypt.genSaltSync(10); // it's the number of laps to reinforce the encryption, by default it's 10
+      user.password = bcrypt.hashSync(password, salt);
+  
+      //TODO: save user
+      const savedUser = await user.save();
+      res.json(savedUser);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: "No se pudo crear el usuario",
+      })
+    }
+  
+}
 
 const getLoggedUser = async ( req = request, res = response )=>{
   
@@ -61,5 +82,6 @@ const getLoggedUser = async ( req = request, res = response )=>{
 
 module.exports = {
   postLogin,
+  postRegister,
   getLoggedUser,
 }
