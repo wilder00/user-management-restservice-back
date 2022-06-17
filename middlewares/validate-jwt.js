@@ -4,8 +4,14 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user.model')
 
 const validateJWT = async ( req = request, res = response, next) => {
-  const token = req.headers['acc-token'];
-  console.log("El token ==================> ", token);
+  const authorization = req.headers['authorization'];
+  const [type , token] = authorization.split(" ");
+  
+  if( type != 'Bearer' ){
+    return res.status(401).json({
+      mensaje: "Se requiere formato de autenticación válida"
+    })
+  }
 
   if( !token ){
     return res.status(401).json({

@@ -1,10 +1,11 @@
 {
-  "name": "temp_restserver",
+  "name": "user-management-restserver",
   "version": "1.0.0",
   "description": "a rest server",
   "main": "index.js",
   "scripts": {
     "start": "node app",
+    "dev": "nodemon --trace-warnings app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

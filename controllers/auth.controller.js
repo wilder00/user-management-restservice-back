@@ -7,7 +7,8 @@ const { generateJWT } = require('../helpers/jwt-generator')
 
 const postLogin = async (req = request, res = response) => {
 
-  const { email, password } = req.body
+  const { email, password } = req.body  
+
   try {
 
     //verify if the email exits
@@ -37,7 +38,7 @@ const postLogin = async (req = request, res = response) => {
     const token = await generateJWT( user.id ) 
 
     res.json({
-      token,
+      access_token: token,
       user
     })
     
@@ -46,25 +47,19 @@ const postLogin = async (req = request, res = response) => {
       error
     })
   }
-
-  res.json({
-    ok: true,
-  })
-  
-  /* const { id, ...rest } = req.body;
-  try {
-    const role = new Role(rest)
-    const savedRole = await role.save()
-    res.json({
-      role: savedRole
-    });
-  } catch (error) {
-    res.status(400).json({
-      error
-    })
-  } */
 }
 
+
+
+const getLoggedUser = async ( req = request, res = response )=>{
+  
+  const user = req.user;
+  res.json({user});
+
+}
+
+
 module.exports = {
-  postLogin
+  postLogin,
+  getLoggedUser,
 }
