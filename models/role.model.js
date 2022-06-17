@@ -12,7 +12,11 @@ const Role = sequelize.define('Role',{
   type: DataTypes.STRING,
   allowNull: false,
   unique: true
- }
+ },
+ label: {
+  type: DataTypes.STRING,
+  allowNull: true,
+ },
 })
 
 

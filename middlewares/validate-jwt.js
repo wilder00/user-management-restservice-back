@@ -5,8 +5,13 @@ const User = require('../models/user.model')
 
 const validateJWT = async ( req = request, res = response, next) => {
   const authorization = req.headers['authorization'];
-  const [type , token] = authorization.split(" ");
+  if(!authorization){
+    return res.status(401).json({
+      mensaje: "Se requiere autenticación"
+    })
+  }
   
+  const [type , token] = authorization.split(" ");
   if( type != 'Bearer' ){
     return res.status(401).json({
       mensaje: "Se requiere formato de autenticación válida"

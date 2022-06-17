@@ -8,7 +8,9 @@ const getRoles = async (req = request, res = response) => {
       roles
     });
   } catch (error) {
-    
+    res.status(500).json({
+      message: 'No se pudo traer roles'
+    });
   }
 }
 
