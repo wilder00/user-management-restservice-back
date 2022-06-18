@@ -18,12 +18,16 @@ const {
 } = require('../middlewares');
 
 const router = Router();
-  
-  router.get('/', [
-    validateJWT,
-    //isAdminRole,
-    hasRole('ADMIN_ROLE', 'USER_ROLE')
-  ] ,getUsers);
+
+router.use('/requests', require('./user/requests.route'))
+router.use('/deleted', require('./user/deleted.route'))
+
+
+router.get('/', [
+  validateJWT,
+  //isAdminRole,
+  hasRole('ADMIN_ROLE', 'USER_ROLE')
+] ,getUsers);
 
 //adding middleware, if we need to use only one, it's not required to put it in an array
 router.post('/',[
