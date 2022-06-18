@@ -57,39 +57,46 @@ const User = sequelize.define('User', {
 
 });
 
-User.hasOne(DeletedUser,{
-  foreignKey:{
-    name: 'userId',
-    allowNull: false,
-    sourceKey: 'id',
-  }
-})
-
-DeletedUser.belongsTo(User,{
-  foreignKey:{
-    name: 'userId',
-    allowNull: false,
-    targetId: 'id'
-  }
-})
 
 // to identify by whom he/she was deleted
 
 User.hasOne(DeletedUser,{
+  as: "deletingUser",
   foreignKey:{
     name: 'byUserId',
     allowNull: false,
-    sourceKey: 'id',
-  }
+  },
+  sourceKey: 'id',
 })
 
 DeletedUser.belongsTo(User,{
+  as: "deletingUser",
   foreignKey:{
     name: 'byUserId',
     allowNull: false,
-    targetId: 'id'
-  }
+  },
+  targetId: 'id'
 })
+
+
+User.hasOne(DeletedUser,{
+  as: "deletedUser",
+  foreignKey:{
+    name: 'userId',
+    allowNull: false,
+  },
+  sourceKey: 'id',
+})
+
+DeletedUser.belongsTo(User,{
+  as: "deletedUser",
+  foreignKey:{
+    name: 'userId',
+    allowNull: false,
+  },
+  targetId: 'id'
+})
+
 
 
 // `sequelize.define` also returns the model
