@@ -25,7 +25,7 @@ const DeletedUser = sequelize.define('DeletedUser', {
 // it's needed a function() instead of arrow function
 DeletedUser.prototype.toJSON = function(){
   //console.log("To object: ", this.dataValues);
-  const { updatedAt, createdAt,  ...deletedUser} = this.dataValues;
+  const { updatedAt,  ...deletedUser} = this.dataValues;
   return deletedUser;
 }
 

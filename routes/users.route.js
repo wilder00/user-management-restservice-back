@@ -26,7 +26,7 @@ router.use('/deleted', require('./user/deleted.route'))
 router.get('/', [
   validateJWT,
   //isAdminRole,
-  hasRole('ADMIN_ROLE', 'USER_ROLE')
+  hasRole('SUPER_ADMIN_ROLE', 'ADMIN_ROLE', 'USER_ROLE')
 ] ,getUsers);
 
 //adding middleware, if we need to use only one, it's not required to put it in an array

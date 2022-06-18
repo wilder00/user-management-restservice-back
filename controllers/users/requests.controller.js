@@ -13,9 +13,9 @@ const getUserRequests = async ( req = request, res = response) =>{
     where = {
       ...where,
       [Op.or]:[
-        { name:     { [ Op.like ] : `%${ q }%` } },
-        { lastName: { [ Op.like ] : `%${ q }%` } },
-        { email:    { [ Op.like ] : `%${ q }%` } },
+        { name:     { [ Op.iLike ] : `%${ q }%` } },
+        { lastName: { [ Op.iLike ] : `%${ q }%` } },
+        { email:    { [ Op.iLike ] : `%${ q }%` } },
       ]
     }
   }

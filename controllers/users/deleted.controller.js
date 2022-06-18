@@ -1,5 +1,6 @@
 
 const { request, response } = require('express')
+const { Op } = require('sequelize')
 const User = require('../../models/user.model')
 const DeletedUser = require('../../models/deletedUser.model')
 
@@ -12,9 +13,9 @@ const getDeletedUsers = async ( req = request, res = response) =>{
     where = {
       ...where,
       [Op.or]:[
-        { name:     { [ Op.like ] : `%${ q }%` } },
-        { lastName: { [ Op.like ] : `%${ q }%` } },
-        { email:    { [ Op.like ] : `%${ q }%` } },
+        { name:     { [ Op.iLike ] : `%${ q }%` } },
+        { lastName: { [ Op.iLike ] : `%${ q }%` } },
+        { email:    { [ Op.iLike ] : `%${ q }%` } },
       ]
     }
   }
@@ -22,14 +23,14 @@ const getDeletedUsers = async ( req = request, res = response) =>{
   try {
     const dbResp = await Promise.all([
       DeletedUser.findAll({ 
-        where , limit, offset, 
+        limit, offset, 
         include: [
-          { model: User, required: true, source: 'id', foreignKey: 'userId', as: "deletedUser", attributes:['id', 'name','lastName']},
-          { model: User, required: true, source: 'id', foreignKey: 'byUserId', as: "deletingUser"},
+          { model: User, required: true, source: 'id', foreignKey: 'userId', as: "deletedUser", where },
+          { model: User, required: true, source: 'id', foreignKey: 'byUserId', as: "deletingUser", attributes:['id', 'name','lastName']},
         ],
-        attributes: ['id','asRole']
+        attributes: ['id','asRole', ['createdAt', 'date']]
       }),
-      DeletedUser.count({ where })
+      DeletedUser.count()
     ])
     const [users , usersQuantity] = dbResp;
     res.json({

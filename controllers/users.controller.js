@@ -1,6 +1,8 @@
 //para que el editor de código autocomplete mejor
 const { request, response } = require('express');
+const { Op } = require('sequelize')
 const bcrypt = require('bcryptjs');
+
 const User = require('../models/user.model');
 const DeletedUser = require('../models/deletedUser.model');
 
@@ -8,24 +10,32 @@ const DeletedUser = require('../models/deletedUser.model');
 const getUsers = async (req = request, res = response)=>{
 
   //obtaining data from query params 
-  const { limit = 5, from = 0 } = req.query
-  const where = {isActive: true}
-  const user  = req.user;
+  const { q, limit = 20, page = 1 } = req.query;
+  let offset = limit * (page < 1? 0 : (page - 1));
+  let where = { acceptedRequest: true, isActive: true }
+  if(q){
+    where = {
+      ...where,
+      [Op.or]:[
+        { name:     { [ Op.iLike ] : `%${ q }%` } },
+        { lastName: { [ Op.iLike ] : `%${ q }%` } },
+        { email:    { [ Op.iLike ] : `%${ q }%` } },
+      ]
+    }
+  }
+
   try {
-
-    const resp = await Promise.all([
-      User.count({ where }),
-      User.findAll({ limit, offset: from, where }),
+    const dbResp = await Promise.all([
+      User.findAll({ where , limit, offset}),
+      User.count({ where })
     ])
-
-    const [total , users] = resp
-
+    const [users , usersQuantity] = dbResp;
     res.json({
-      total,
-      count: users.length,  
-      users,
-      requestor: user
-    });
+      currentPage: parseInt(page),
+      pages: Math.ceil( usersQuantity / limit ),
+      usersQuantity,
+      users
+    })  
   } catch (error) {
     res.status(500).json({
       error
