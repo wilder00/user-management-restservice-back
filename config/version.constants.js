@@ -1,4 +1,4 @@
 const info = {
-  VERSION: 'v1.0.0 - alfa2.2.2'
+  VERSION: 'v1.1.1-alfa'
 }
 module.exports = info;

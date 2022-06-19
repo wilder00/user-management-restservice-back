@@ -20,7 +20,7 @@ const postLogin = async (req = request, res = response) => {
     // verify if user is active
     if( !user.isActive ){
       res.status(400).json({
-        message: 'Usuario / Password no son correctos'
+        message: 'Contactar con un Administrador para que te de de alta.'
       })
     }
 
