@@ -109,21 +109,36 @@ const patchUser = (req, res = response)=>{
 
 const deleteUser = async (req, res = response)=>{
   const { userId } = req.params;
-
+  const deletingUser = req.user;
   try {
-
-    //borrando físico
-    /* const delUser = await User.destroy({ where: { id: userId } })
-    
-    res.json({
-      numberRowsDeleted: delUser
-    }); */
-
     //borrado simbólico
-    const user = await User.findByPk(userId);
-    const removed = await user.update({isActive: false})
+    const deletedUser = await User.findByPk(userId);
+
+    if(deletedUser.role === 'SUPER_ADMIN_ROLE'){
+      if(deletingUser.role !== 'SUPER_ADMIN_ROLE'){
+        return res.status(403).json({
+          message: 'Este usuario solo puede ser eliminado por otro del mismo rol.'
+        })
+      }
+    }
+
+    if(deletedUser.id === deletingUser.id){
+
+      return res.status(403).json({
+        message: 'No se puede eliminar a si mismo.'
+      })
+    }
+
+    await deletedUser.update({isActive: false})
+    await DeletedUser.create({
+      userId: deletedUser.id,
+      asRole: deletingUser.role,
+      byUserId: deletingUser.id,
+    })
+
+
     res.json({
-      message: "Se eliminó el usuario" 
+      message: `Has eliminado a ${deletedUser.name} ${deletedUser.lastName}.`
     });
 
   } catch (error) {

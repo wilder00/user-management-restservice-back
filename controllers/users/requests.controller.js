@@ -39,7 +39,25 @@ const getUserRequests = async ( req = request, res = response) =>{
   }
 }
 
+const postUserRequest = async ( req = request, res = response) => {
+  const { userId } = req.params;
+  try {
+
+    const user = await User.update({acceptedRequest: true, isActive: true}, { where:{id: userId} })
+
+    res.json({
+      message: `Aceptaste al usuario correctamente.`,
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: `No se pudo aceptar al usuario.`,
+    })
+  }
+}
+
 
 module.exports = {
-  getUserRequests
+  getUserRequests,
+  postUserRequest
 }

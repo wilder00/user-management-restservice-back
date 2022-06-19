@@ -8,11 +8,11 @@ const {
   patchUser,
   deleteUser } = require('../controllers/users.controller');
 
-const { isValidRole, existEmail, existUserWithId } = require('../helpers/db-validators');
+const { isValidRole, existEmail, existUserWithId, userIsNotDeleted } = require('../helpers/db-validators');
 
 const {
-  validateFields,
   validateJWT,
+  validateFields,
   isAdminRole,
   hasRole,
 } = require('../middlewares');
@@ -31,6 +31,7 @@ router.get('/', [
 
 //adding middleware, if we need to use only one, it's not required to put it in an array
 router.post('/',[
+  validateJWT,
   check('email', 'el correo no es válido').isEmail(), //this will send the error to the controller
   check('email').custom( existEmail ), //this will send the error to the controller
   check('name', 'El nombre es obligatorio').not().isEmpty(),
@@ -43,6 +44,7 @@ router.post('/',[
 
 
 router.put('/:userId',[
+  validateJWT,
   check('userId', 'No es un id válido').isInt().toInt(),
   check('userId').custom( existUserWithId ),
   check('role').custom( isValidRole ),
@@ -50,11 +52,15 @@ router.put('/:userId',[
 ],putUser);
 
 
-router.patch('/', patchUser);
+router.patch('/',[
+  validateJWT,
+], patchUser);
 
 router.delete('/:userId',[
+  validateJWT,
   check('userId', 'No es un id válido').isInt().toInt(),
   check('userId').custom( existUserWithId ),
+  check('userId').custom( userIsNotDeleted ), 
   validateFields
 ], deleteUser);
 

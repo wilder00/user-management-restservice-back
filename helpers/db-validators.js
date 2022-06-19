@@ -1,5 +1,6 @@
 const Role = require('../models/role.model');
 const User = require('../models/user.model');
+const DeletedUser = require('../models/deletedUser.model');
 
 const existRole = async (roleName = '') => {
   const existRole = await Role.findOne({ where: { roleName } });
@@ -32,7 +33,25 @@ const existUserWithId = async (userId = 'null') => {
   }
 }
 
+const userIsNotDeleted = async (userId = 'null') => {
+  if(!userId){
+    throw new Error(`El id debe ser numérico`);
+  }
+  const dbDeletedUser = await DeletedUser.findOne({where:{ userId }});
+  if( dbDeletedUser ){
+    throw new Error(`El usuario ya se encuentra eliminado`);
+  }
+}
 
+const isUserDeleted = async (deletedUserId = 'null') => {
+  if(!deletedUserId){
+    throw new Error(`El id debe ser numérico`);
+  }
+  const dbDeletedUser = await DeletedUser.findOne({where:{ id: deletedUserId }});
+  if( !dbDeletedUser ){
+    throw new Error(`No hay un registro con id: ${deletedUserId} de usuario eliminado`);
+  }
+}
 
 
 module.exports = {
@@ -40,4 +59,6 @@ module.exports = {
   isValidRole,
   existEmail,
   existUserWithId,
+  userIsNotDeleted,
+  isUserDeleted
 }
