@@ -49,7 +49,7 @@ const postLogin = async (req = request, res = response) => {
 
 const postRegister = async (req = request, res = response ) => {
 
-    const {name, lastName, email, password, role} = req.body;
+    const {name, lastName, email, password} = req.body;
   
     try {
       //const user = new User({ firstName, lastName })
@@ -62,7 +62,7 @@ const postRegister = async (req = request, res = response ) => {
   
       //TODO: save user
       const savedUser = await user.save();
-      res.json(savedUser);
+      res.status(201).json(savedUser);
     } catch (error) {
       console.log(error);
       res.status(500).json({
