@@ -58,6 +58,7 @@ router.patch('/',[
 
 router.delete('/:userId',[
   validateJWT,
+  hasRole('SUPER_ADMIN_ROLE', 'ADMIN_ROLE'),
   check('userId', 'No es un id válido').isInt().toInt(),
   check('userId').custom( existUserWithId ),
   check('userId').custom( userIsNotDeleted ), 

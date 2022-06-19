@@ -6,6 +6,7 @@ const { existRole, existUserWithId } = require('../../helpers/db-validators')
 const {
   validateJWT,
   validateFields,
+  hasRole,
 } = require('../../middlewares');
 const { getUserRequests, postUserRequest } = require('../../controllers/users/requests.controller');
 
@@ -17,6 +18,7 @@ router.get('/', [
 
 router.post('/:userId', [
   validateJWT,
+  hasRole('SUPER_ADMIN_ROLE', 'ADMIN_ROLE'),
   check('userId', 'No es un id válido').isInt().toInt(),
   check('userId').custom( existUserWithId ),
   validateFields

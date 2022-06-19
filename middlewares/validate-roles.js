@@ -28,7 +28,7 @@ const isRootRole = ( req = request, res = response, next)=>{
   const roles = ['SUPER_ADMIN_ROLE']
   if(!roles.includes( role )){
     return res.status(401).json({
-      message: `${name} no es root`
+      message: `${name}, no eres usuario root.`
     })
   }
   next();
@@ -42,10 +42,9 @@ const hasRole = ( ...roles ) =>{
         message: 'Se quiere verificar el rol sin validar el token primero'
       })
     }
-
-    if( !roles.includes( req.user.role) ){
+    if( !roles.includes( req.user.role ) ){
       return res.status(401).json({
-        message: `El servicio requiere uno de estos roles: ${ roles }`
+        message: `El servicio requiere que tengas rol de administrador.`
       })
     }
 
